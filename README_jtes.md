@@ -31,6 +31,12 @@ Prerequisits on ubunutu from https://github.com/Valloric/YouCompleteMe/wiki/Buil
         libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
         libcairo2-dev libx11-dev libxpm-dev libxt-dev python-dev ruby-dev mercurial
 
+For Fedora
+
+    yum install ncurses-devel libgnome-devel libgnomeui-devel \
+        gtk2-devel atk-devel libbonoboui-devel \
+        cairo-devel libX11-devel libXpm-devel libXt-devel python-devel ruby-devel mercurial
+
 From http://stackoverflow.com/questions/18488403/building-gvim-7-4-on-centos-6-4
 
     ./configure --prefix=/usr --with-compiledby="jtes"   \
@@ -38,7 +44,7 @@ From http://stackoverflow.com/questions/18488403/building-gvim-7-4-on-centos-6-4
         --enable-pythoninterp --enable-python3interp    \
         --disable-tclinterp --with-x=yes \
         --enable-xim --enable-multibyte \
-        --enable-gui=gtk \
+        --enable-gui=gtk2 \
         --enable-luainterp --enable-perlinterp \
         --enable-cscope \
         --enable-netbeans 2>&1
