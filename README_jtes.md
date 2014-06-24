@@ -2,11 +2,11 @@ Changes by JTES
 
 Changes to make vim multiple windows so it can be used on a multi-monitor setup.
 
-== Design is as follows.
+# Design is as follows.
 
-# Using GTK as start
-# Create a new top level window
-# Use the tab notebook to allow drag and drop between the two windows
+* Using GTK as start
+* Create a new top level window
+* Use the tab notebook to allow drag and drop between the two windows
 
 https://developer.gnome.org/gtk3/3.9/GtkNotebook.html#gtk-notebook-set-tab-detachable
 
@@ -18,12 +18,12 @@ https://github.com/jerryd/gtk-fortran/blob/master/examples/notebooks.f90
 https://developer.gnome.org/gtk-tutorial/2.90/x1450.html
 
 Notes:
-# Currently the drawwindow is not attached to the draw window - this means it does not drag and drop with it
-# Need to allow reording of tabs
-# Look at how tabs in GTK are mapped to the actual vim tab number
+* Currently the drawwindow is not attached to the draw window - this means it does not drag and drop with it
+* Need to allow reording of tabs
+* Look at how tabs in GTK are mapped to the actual vim tab number
 
 
-== Build as follows
+# Build as follows
 
 Prerequisits on ubunutu from https://github.com/Valloric/YouCompleteMe/wiki/Building-Vim-from-source
 
