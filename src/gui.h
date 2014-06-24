@@ -370,6 +370,17 @@ typedef struct Gui
     /* X Resources */
     char_u	*geom;		    /* Geometry, eg "80x24" */
 
+// JTES
+
+    GtkWidget	*sec_mainwin;	    /* second top level GTK window */
+    GtkWidget	*sec_formwin;	    /* manages all the windows below */
+    GtkWidget	*sec_drawarea;	    /* the "text" area */
+# ifdef FEAT_GUI_TABLINE
+    GtkWidget	*sec_tabline;	    /* tab pages line handle */
+# endif
+
+// JTES
+
     GtkWidget	*mainwin;	    /* top level GTK window */
     GtkWidget	*formwin;	    /* manages all the windows below */
     GtkWidget	*drawarea;	    /* the "text" area */

@@ -3125,6 +3125,92 @@ gui_gtk_set_dnd_targets(void)
 		      GDK_ACTION_COPY | GDK_ACTION_MOVE);
 }
 
+// JTES:
+// Starts the second window for tab dragging
+static gui_start_second_window(void)
+{
+    
+    GtkWidget *vbox;
+
+	gui.sec_mainwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    
+    gtk_widget_set_name(gui.sec_mainwin, "vim-sec-main-window");
+    
+    vbox = gtk_vbox_new(FALSE, 0);
+	
+    gtk_container_add(GTK_CONTAINER(gui.sec_mainwin), vbox);
+	gtk_widget_show(vbox);
+
+#ifdef FEAT_GUI_TABLINE
+    /*
+     * Use a Notebook for the tab pages labels.  The labels are hidden by
+     * default.
+     */
+    gui.sec_tabline = gtk_notebook_new();
+    gtk_widget_show(gui.sec_tabline);
+    gtk_box_pack_start(GTK_BOX(vbox), gui.sec_tabline, FALSE, FALSE, 0);
+    gtk_notebook_set_show_border(GTK_NOTEBOOK(gui.sec_tabline), FALSE);
+    gtk_notebook_set_show_tabs(GTK_NOTEBOOK(gui.sec_tabline), FALSE);
+    gtk_notebook_set_scrollable(GTK_NOTEBOOK(gui.sec_tabline), TRUE);
+    gtk_notebook_set_tab_border(GTK_NOTEBOOK(gui.sec_tabline), FALSE);
+
+    static GtkTooltips *sec_tabline_tooltip;
+    sec_tabline_tooltip = gtk_tooltips_new();
+    gtk_tooltips_enable(GTK_TOOLTIPS(sec_tabline_tooltip));
+
+    {
+	GtkWidget *page, *label, *event_box;
+
+	/* Add the first tab. */
+	page = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(page);
+	gtk_container_add(GTK_CONTAINER(gui.sec_tabline), page);
+	label = gtk_label_new("-Empty-");
+	gtk_widget_show(label);
+	event_box = gtk_event_box_new();
+	gtk_widget_show(event_box);
+	gtk_object_set_user_data(GTK_OBJECT(event_box), (gpointer)1L);
+	gtk_misc_set_padding(GTK_MISC(label), 2, 2);
+	gtk_container_add(GTK_CONTAINER(event_box), label);
+	gtk_notebook_set_tab_label(GTK_NOTEBOOK(gui.sec_tabline), page, event_box);
+    }
+
+    gtk_signal_connect(GTK_OBJECT(gui.sec_tabline), "switch_page",
+		       GTK_SIGNAL_FUNC(on_select_tab), NULL);
+
+    /* Create a popup menu for the tab line and connect it. */
+    //static GtkWidget *sec_tabline_menu;
+    //sec_tabline_menu = create_sec_tabline_menu();
+    //gtk_signal_connect_object(GTK_OBJECT(gui.sec_tabline), "button_press_event",
+	//    GTK_SIGNAL_FUNC(on_sec_tabline_menu), GTK_OBJECT(sec_tabline_menu));
+#endif
+
+    gui.sec_formwin = gtk_form_new();
+    gtk_container_border_width(GTK_CONTAINER(gui.sec_formwin), 0);
+    gtk_widget_set_events(gui.sec_formwin, GDK_EXPOSURE_MASK);
+
+    gui.sec_drawarea = gtk_drawing_area_new();
+
+    /* Determine which events we will filter. */
+    gtk_widget_set_events(gui.sec_drawarea,
+			  GDK_EXPOSURE_MASK |
+			  GDK_ENTER_NOTIFY_MASK |
+			  GDK_LEAVE_NOTIFY_MASK |
+			  GDK_BUTTON_PRESS_MASK |
+			  GDK_BUTTON_RELEASE_MASK |
+			  GDK_SCROLL_MASK |
+			  GDK_KEY_PRESS_MASK |
+			  GDK_KEY_RELEASE_MASK |
+			  GDK_POINTER_MOTION_MASK |
+			  GDK_POINTER_MOTION_HINT_MASK);
+
+    gtk_widget_show(gui.sec_drawarea);
+    gtk_form_put(GTK_FORM(gui.sec_formwin), gui.sec_drawarea, 0, 0);
+    gtk_widget_show(gui.sec_formwin);
+    gtk_box_pack_start(GTK_BOX(vbox), gui.sec_formwin, TRUE, TRUE, 0);
+
+}
+
 /*
  * Initialize the GUI.	Create all the windows, set up all the callbacks etc.
  * Returns OK for success, FAIL when the GUI can't be started.
@@ -3535,6 +3621,10 @@ gui_mch_init(void)
     /* Pretend we don't have input focus, we will get an event if we do. */
     gui.in_focus = FALSE;
 
+    
+    // JTES
+    gui_start_second_window();
+
     return OK;
 }
 
@@ -3842,6 +3932,10 @@ gui_mch_open(void)
 # endif
 #endif
 	gtk_widget_show(gui.mainwin);
+
+    // JTES
+	gtk_widget_show(gui.sec_mainwin);
+
 
 #if defined(FEAT_GUI_GNOME) && defined(FEAT_MENU)
 	if (menu_handler != 0)
