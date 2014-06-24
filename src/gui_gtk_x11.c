@@ -3020,6 +3020,10 @@ gui_mch_update_tabline(void)
 		    page,
 		    event_box,
 		    nr++);
+
+        // JTES
+	    gtk_notebook_set_tab_detachable(GTK_NOTEBOOK(gui.tabline), page, TRUE);
+	    gtk_notebook_set_tab_reorderable(GTK_NOTEBOOK(gui.tabline), page, TRUE);
 	}
 
 	event_box = gtk_notebook_get_tab_label(GTK_NOTEBOOK(gui.tabline), page);
@@ -3041,8 +3045,7 @@ gui_mch_update_tabline(void)
     /* Remove any old labels. */
     while (gtk_notebook_get_nth_page(GTK_NOTEBOOK(gui.tabline), nr) != NULL)
 	gtk_notebook_remove_page(GTK_NOTEBOOK(gui.tabline), nr);
-
-    if (gtk_notebook_current_page(GTK_NOTEBOOK(gui.tabline)) != curtabidx)
+if (gtk_notebook_current_page(GTK_NOTEBOOK(gui.tabline)) != curtabidx)
 	gtk_notebook_set_page(GTK_NOTEBOOK(gui.tabline), curtabidx);
 
     /* Make sure everything is in place before drawing text. */
@@ -3136,10 +3139,23 @@ static gui_start_second_window(void)
     
     gtk_widget_set_name(gui.sec_mainwin, "vim-sec-main-window");
     
+    gtk_container_border_width(GTK_CONTAINER(gui.sec_mainwin), 10);
+    
     vbox = gtk_vbox_new(FALSE, 0);
 	
     gtk_container_add(GTK_CONTAINER(gui.sec_mainwin), vbox);
 	gtk_widget_show(vbox);
+
+    GtkWidget *button;
+    /* Creates a new button with the label "Hello World". */
+    button = gtk_button_new_with_label ("Hello World");
+    
+    /* This packs the button into the window (a gtk container). */
+    gtk_container_add (GTK_CONTAINER (vbox), button);
+    
+    /* The final step is to display this newly created widget. */
+    gtk_widget_show (button);
+
 
 #ifdef FEAT_GUI_TABLINE
     /*
@@ -3153,6 +3169,10 @@ static gui_start_second_window(void)
     gtk_notebook_set_show_tabs(GTK_NOTEBOOK(gui.sec_tabline), FALSE);
     gtk_notebook_set_scrollable(GTK_NOTEBOOK(gui.sec_tabline), TRUE);
     gtk_notebook_set_tab_border(GTK_NOTEBOOK(gui.sec_tabline), FALSE);
+    
+    gtk_notebook_set_group_name(GTK_NOTEBOOK(gui.sec_tabline), "tabgroup");
+	
+    gtk_notebook_set_show_tabs(GTK_NOTEBOOK(gui.sec_tabline), TRUE);
 
     static GtkTooltips *sec_tabline_tooltip;
     sec_tabline_tooltip = gtk_tooltips_new();
@@ -3173,6 +3193,33 @@ static gui_start_second_window(void)
 	gtk_misc_set_padding(GTK_MISC(label), 2, 2);
 	gtk_container_add(GTK_CONTAINER(event_box), label);
 	gtk_notebook_set_tab_label(GTK_NOTEBOOK(gui.sec_tabline), page, event_box);
+    }
+
+    {
+    int i;
+    GtkWidget *frame;
+    GtkWidget *label;
+    char bufferf[32];
+    char bufferl[32];
+
+   /* Let's append a bunch of pages to the notebook */
+    for (i = 0; i < 5; i++) {
+	sprintf(bufferf, "Append Frame %d", i + 1);
+	sprintf(bufferl, "Page %d", i + 1);
+	
+	frame = gtk_frame_new (bufferf);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 10);
+	gtk_widget_set_size_request (frame, 100, 75);
+	gtk_widget_show (frame);
+	
+	label = gtk_label_new (bufferf);
+	gtk_container_add (GTK_CONTAINER (frame), label);
+	gtk_widget_show (label);
+	
+	label = gtk_label_new (bufferl);
+	gtk_notebook_append_page (GTK_NOTEBOOK (gui.sec_tabline), frame, label);
+    }
+
     }
 
     gtk_signal_connect(GTK_OBJECT(gui.sec_tabline), "switch_page",
@@ -3454,6 +3501,9 @@ gui_mch_init(void)
     gtk_notebook_set_show_tabs(GTK_NOTEBOOK(gui.tabline), FALSE);
     gtk_notebook_set_scrollable(GTK_NOTEBOOK(gui.tabline), TRUE);
     gtk_notebook_set_tab_border(GTK_NOTEBOOK(gui.tabline), FALSE);
+   
+    // JTES
+    gtk_notebook_set_group_name(GTK_NOTEBOOK(gui.tabline), "tabgroup"); 
 
     tabline_tooltip = gtk_tooltips_new();
     gtk_tooltips_enable(GTK_TOOLTIPS(tabline_tooltip));
@@ -3935,6 +3985,7 @@ gui_mch_open(void)
 
     // JTES
 	gtk_widget_show(gui.sec_mainwin);
+	gtk_window_resize(GTK_WINDOW(gui.mainwin), 300, 300);
 
 
 #if defined(FEAT_GUI_GNOME) && defined(FEAT_MENU)

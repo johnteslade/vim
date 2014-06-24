@@ -13,9 +13,15 @@ https://developer.gnome.org/gtk3/3.9/GtkNotebook.html#gtk-notebook-set-tab-detac
 Posisble issue with the Gtk socket being used
 http://gtk.10911.n7.nabble.com/GtkSocket-in-GtkNotebook-with-drag-and-drop-tabs-td80388.html
 
+Example notebooks
+https://github.com/jerryd/gtk-fortran/blob/master/examples/notebooks.f90
+https://developer.gnome.org/gtk-tutorial/2.90/x1450.html
+
 Notes:
+# Currently the drawwindow is not attached to the draw window - this means it does not drag and drop with it
 # Need to allow reording of tabs
 # Look at how tabs in GTK are mapped to the actual vim tab number
+
 
 == Build as follows
 
