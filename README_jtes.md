@@ -38,7 +38,7 @@ From http://stackoverflow.com/questions/18488403/building-gvim-7-4-on-centos-6-4
         --enable-pythoninterp --enable-python3interp    \
         --disable-tclinterp --with-x=yes \
         --enable-xim --enable-multibyte \
-        --enable-gui=gnome2 \
+        --enable-gui=gtk \
         --enable-luainterp --enable-perlinterp \
         --enable-cscope \
         --enable-netbeans 2>&1
